@@ -1,5 +1,6 @@
-import os.path
 import doctest
+import os.path
+import sys
 import unittest
 
 
@@ -34,6 +35,10 @@ def all_tests_suite():
         'pyutf8.tests.test_valid_utf8_bytes',
     ])
     suite = additional_tests(suite)
+    # Python 3 doesnt like OptionalExtensionTestSuite
+    if sys.version_info[0] == 3:
+        return suite
+
     return OptionalExtensionTestSuite([suite])
 
 
