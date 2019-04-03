@@ -1,5 +1,6 @@
-import unittest
+import os.path
 import doctest
+import unittest
 
 
 class OptionalExtensionTestSuite(unittest.TestSuite):
@@ -20,7 +21,10 @@ def additional_tests(suite=None):
         suite = unittest.TestSuite()
     for mod in (pyutf8, pyutf8.ref):
         suite.addTest(doctest.DocTestSuite(mod))
-    suite.addTest(doctest.DocFileSuite('../../README.rst'))
+    if os.path.exists('./README.rst'):
+        suite.addTest(doctest.DocFileSuite('README.rst', module_relative=False))
+    else:
+        print('Can not find README.rst')
     return suite
 
 
