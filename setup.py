@@ -16,13 +16,13 @@ VERSION = '0.1'
 DESCRIPTION = "Extension for dealing with valid and invalid UTF-8 strings"
 LONG_DESCRIPTION = open('README.rst').read()
 
-CLASSIFIERS = filter(None, map(str.strip,
+CLASSIFIERS = [_f for _f in map(str.strip,
 """
 Intended Audience :: Developers
 License :: OSI Approved :: MIT License
 Programming Language :: Python
 Topic :: Software Development :: Libraries :: Python Modules
-""".splitlines()))
+""".splitlines()) if _f]
 
 
 speedups = Feature(
@@ -50,13 +50,13 @@ class ve_build_ext(build_ext):
     def run(self):
         try:
             build_ext.run(self)
-        except DistutilsPlatformError, x:
+        except DistutilsPlatformError as x:
             raise BuildFailed()
 
     def build_extension(self, ext):
         try:
             build_ext.build_extension(self, ext)
-        except ext_errors, x:
+        except ext_errors as x:
             raise BuildFailed()
 
 def run_setup(with_binary):
@@ -81,21 +81,22 @@ def run_setup(with_binary):
         zip_safe=True,
         features=features,
         cmdclass={'build_ext': ve_build_ext},
+        use_2to3=True,
     )
 
 try:
     run_setup(True)
 except BuildFailed:
     BUILD_EXT_WARNING = "WARNING: The C extension could not be compiled, speedups are not enabled."
-    print '*' * 75
-    print BUILD_EXT_WARNING
-    print "Failure information, if any, is above."
-    print "I'm retrying the build without the C extension now."
-    print '*' * 75
+    print('*' * 75)
+    print(BUILD_EXT_WARNING)
+    print("Failure information, if any, is above.")
+    print("I'm retrying the build without the C extension now.")
+    print('*' * 75)
 
     run_setup(False)
 
-    print '*' * 75
-    print BUILD_EXT_WARNING
-    print "Plain-Python installation succeeded."
-    print '*' * 75
+    print('*' * 75)
+    print(BUILD_EXT_WARNING)
+    print("Plain-Python installation succeeded.")
+    print('*' * 75)
